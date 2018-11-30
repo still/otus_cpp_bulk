@@ -7,6 +7,7 @@
 #include <string>
 #include <list>
 #include <ctime>
+#include <functional>
 
 int version();
 
@@ -14,18 +15,17 @@ namespace otus {
 
     using Command   = std::string;
     using Commands  = std::list<Command>;
-    using BulkSlot  = typename std::function<void(std::list<std::string>)>;
+    using BulkSlot  = std::function<void(std::list<std::string>)>;
     using BulkSlots = std::list<BulkSlot>;
-    using TimeSlot  = typename std::function<void(time_t)>;
+    using TimeSlot  = std::function<void(time_t)>;
     using TimeSlots = std::list<TimeSlot>;
 
     class Bulk {
     public:
-        Bulk(int cpb) : m_cpb(cpb), m_brackets(0) {}
+        Bulk(size_t cpb) : m_cpb(cpb), m_brackets(0) {}
         void append(const std::string& str) {
             if(str == "{") {
-                ++m_brackets;
-                if(m_commands.size() > 0)
+                if(++m_brackets == 1)
                     notifyBulk();
                 return;
             }
@@ -60,7 +60,7 @@ namespace otus {
             }
         }
         void notifyTime() {
-            time_t time = std::time(0);
+            time_t time = std::time(nullptr);
             for(const auto& slot: m_timeSlots)
                 slot(time);
         }
