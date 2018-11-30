@@ -14,9 +14,9 @@ namespace otus {
 
     using Command   = std::string;
     using Commands  = std::list<Command>;
-    using BulkSlot  = std::function<void(std::list<std::string>)>;
+    using BulkSlot  = typename std::function<void(std::list<std::string>)>;
     using BulkSlots = std::list<BulkSlot>;
-    using TimeSlot  = std::function<void(time_t)>;
+    using TimeSlot  = typename std::function<void(time_t)>;
     using TimeSlots = std::list<TimeSlot>;
 
     class Bulk {
@@ -97,7 +97,6 @@ namespace otus {
         }
         void time(time_t time) {
             m_time = time;
-            std::cout << time << std::endl;
         }
     private:
         time_t  m_time;
